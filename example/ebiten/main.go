@@ -2,6 +2,7 @@ package main
 
 import (
 	"log"
+	"math/rand"
 	"time"
 
 	"github.com/a-skua/lifegame-go"
@@ -21,11 +22,6 @@ func writeTable(pixel []byte, table [][]lifegame.State) {
 	}
 }
 
-const (
-	L = lifegame.Live
-	D = lifegame.Die
-)
-
 type Game struct {
 	state  *lifegame.Lifegame
 	width  int
@@ -35,17 +31,20 @@ type Game struct {
 }
 
 func NewGame() *Game {
-	const width, height = 6, 6
+	const width, height = 32, 24
+
+	states := make([]lifegame.State, 0, width*height)
+	for i := 0; i < width*height; i++ {
+		var s lifegame.State
+		if n := rand.Intn(2); n > 0 {
+			s = lifegame.Live
+		}
+
+		states = append(states, s)
+	}
 
 	pixel := make([]byte, width*height*4)
-	state := lifegame.New(lifegame.NewCell(width, height, []lifegame.State{
-		D, D, D, D, D, D,
-		D, L, L, D, D, D,
-		D, L, L, D, D, D,
-		D, D, D, L, L, D,
-		D, D, D, L, L, D,
-		D, D, D, D, D, D,
-	}))
+	state := lifegame.New(lifegame.NewCell(width, height, states))
 	writeTable(pixel, state.Table())
 
 	return &Game{
@@ -53,7 +52,7 @@ func NewGame() *Game {
 		width:  width,
 		height: height,
 		pixel:  pixel,
-		ticker: time.NewTicker(500 * time.Millisecond),
+		ticker: time.NewTicker(100 * time.Millisecond),
 	}
 }
 
