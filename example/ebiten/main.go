@@ -14,7 +14,7 @@ func writeTable(pixel []byte, table [][]lifegame.State) {
 	for _, row := range table {
 		for _, state := range row {
 			if state.IsLive() {
-				pixel = append(pixel, 0xff, 0xff, 0xff, 0x00)
+				pixel = append(pixel, 0xff, 0xff, 0xff, 0xff)
 			} else {
 				pixel = append(pixel, 0x00, 0x00, 0x00, 0x00)
 			}
@@ -31,7 +31,7 @@ type Game struct {
 }
 
 func NewGame() *Game {
-	const width, height = 32, 24
+	const width, height = 128, 96
 
 	states := make([]lifegame.State, 0, width*height)
 	for i := 0; i < width*height; i++ {
